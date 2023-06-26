@@ -149,6 +149,7 @@ public class HuffmanCompressionDriver {
         String outputFile = "";
         String treeFile = "";
         String element = "";
+        boolean toASCII = false;
 
         for (int i = 0; i < args.length; i++) {
             element = args[i];
@@ -163,6 +164,8 @@ public class HuffmanCompressionDriver {
             } else if (element.equals("-t") && i + 1 < args.length) {
                 treeFile = args[i + 1];
                 i++;
+            } else if (element.equals("-a")) {
+                toASCII = true;
             }
         }
 
@@ -204,9 +207,16 @@ public class HuffmanCompressionDriver {
                 return;
             }
 
-            decodeFileBinary(inputFile, outputFile, treeFile);
+            if (toASCII)
+                decodeFile(inputFile, outputFile, treeFile);
+            else
+                decodeFileBinary(inputFile, outputFile, treeFile);
+
         } else {
-            encodeFileBinary(inputFile, outputFile, treeFile);
+            if (toASCII)
+                encodeFile(inputFile, outputFile, treeFile);
+            else
+                encodeFileBinary(inputFile, outputFile, treeFile);
         }
     }
 }
