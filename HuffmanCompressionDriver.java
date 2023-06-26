@@ -185,17 +185,33 @@ public class HuffmanCompressionDriver {
         }
 
         if (outputFile.equals("")) {
-            if (command == "encoded") {
-                outputFile = inputFile + ".encoded";
+            if (command.equals("decode")) {
+
+                if (inputFile.endsWith(".encoded")) {
+                    outputFile = inputFile.replace(".encoded", ".decoded");
+                } else {
+                    outputFile = inputFile + ".decoded";
+                }
+
             } else {
-                outputFile = inputFile + ".decoded";
+                if (inputFile.endsWith(".decoded")) {
+                    outputFile = inputFile.replace(".decoded", ".encoded");
+                } else {
+                    outputFile = inputFile + ".encoded";
+                }
             }
 
             System.out.println("Output file not explicity provided, defaulted to: " + outputFile);
         }
 
         if (treeFile.equals("")) {
-            treeFile = inputFile + ".tree";
+            if (inputFile.endsWith(".decoded")) {
+                treeFile = inputFile.replace(".decoded", ".tree");
+            } else if (inputFile.endsWith(".encoded")) {
+                treeFile = inputFile.replace(".encoded", ".tree");
+            } else {
+                treeFile = inputFile + ".tree";
+            }
             System.out.println("Tree file not explicity provided, defaulted to: " + treeFile);
         }
 
