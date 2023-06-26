@@ -1,65 +1,8 @@
-import java.io.File;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Queue;
-import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-/**
- * A binary tree to represent a node in
- * the Huffman Encoding method.
- */
-class HuffmanTree implements Comparable<HuffmanTree> {
-    HuffmanTree left;
-    HuffmanTree right;
-    Character character;
-    int frequency;
-
-    @Override
-    public int compareTo(HuffmanTree b) {
-        return Integer.compare(frequency, b.frequency);
-    }
-
-    public String serialize() {
-        String s;
-        if (this.character == null) {
-            s = "null";
-        } else {
-            s = "" + ((int) this.character);
-        }
-
-        return (s + "|" + this.frequency
-                + "," + (this.left == null ? "#" : this.left.serialize())
-                + "," + (this.right == null ? "#" : this.right.serialize()));
-    }
-
-    public static HuffmanTree deserialize(String data) {
-        data = data.replace("\n", "");
-        Queue<String> queue = new LinkedList<>(Arrays.asList(data.split(",")));
-        return buildTree(queue);
-    }
-
-    private static HuffmanTree buildTree(Queue<String> queue) {
-        String s = queue.poll();
-        if (s.equals("#")) {
-            return null;
-        }
-        HuffmanTree root = new HuffmanTree();
-        String nodeString[] = s.split("\\|");
-        if (nodeString[0].equals("null")) {
-            root.character = null;
-        } else {
-            root.character = (char) Integer.parseInt(nodeString[0]);
-        }
-        root.frequency = Integer.parseInt(nodeString[1]);
-        root.left = buildTree(queue);
-        root.right = buildTree(queue);
-        return root;
-    }
-}
-
-class HuffManEncoding {
+public class HuffmanEncoder {
 
     public static HashMap<Character, Integer> calculateFrequencyTable(String inputText) {
         HashMap<Character, Integer> frequencyTable = new HashMap<>();
@@ -78,12 +21,18 @@ class HuffManEncoding {
             priorityQueue.add(node);
         }
 
+        // Term character to signify the end of the encoded text
+        HuffmanTree node = new HuffmanTree();
+        node.character = HuffmanTree.TEXT_TERM;
+        node.frequency = 1;
+        priorityQueue.add(node);
+
         HuffmanTree first, second;
 
         while (priorityQueue.size() > 1) {
             first = priorityQueue.poll();
             second = priorityQueue.poll();
-            HuffmanTree node = new HuffmanTree();
+            node = new HuffmanTree();
             node.character = null; // placeholder value
             node.frequency = first.frequency + second.frequency;
             node.left = first;
@@ -136,6 +85,9 @@ class HuffManEncoding {
             }
 
             if (current.character != null) {
+                if (current.character == HuffmanTree.TEXT_TERM)
+                    break;
+
                 text.append(current.character);
                 current = huffmanTree;
             }
